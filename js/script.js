@@ -1,4 +1,4 @@
-// ===== MOBILE NAVIGATION =====
+// ===== Navegación mobil =====
 const mobileToggle = document.querySelector('.mobile-toggle');
 const nav = document.querySelector('.nav');
 const navDropdowns = document.querySelectorAll('.nav-dropdown');
@@ -10,7 +10,6 @@ if (mobileToggle) {
   });
 }
 
-// Mobile dropdown toggle
 navDropdowns.forEach(dropdown => {
   const link = dropdown.querySelector('.nav-link');
   if (link) {
@@ -23,7 +22,6 @@ navDropdowns.forEach(dropdown => {
   }
 });
 
-// Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.header')) {
     nav.classList.remove('active');
@@ -31,7 +29,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ===== HEADER SCROLL EFFECT =====
 const header = document.querySelector('.header');
 
 window.addEventListener('scroll', () => {
@@ -42,7 +39,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// ===== FAQ ACCORDION =====
+// ===== FAQ  =====
 const faqItems = document.querySelectorAll('.faq-item');
 
 faqItems.forEach(item => {
@@ -68,7 +65,6 @@ faqItems.forEach(item => {
   }
 });
 
-// ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     const targetId = this.getAttribute('href');
@@ -84,7 +80,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
           behavior: 'smooth'
         });
         
-        // Close mobile menu after clicking
+        // Reactivo para moviles
         nav.classList.remove('active');
         mobileToggle?.classList.remove('active');
       }
@@ -92,7 +88,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ===== ANIMATE ON SCROLL =====
+// ===== Animación al hacer scroll =====
 const observerOptions = {
   threshold: 0.1,
   rootMargin: '0px 0px -50px 0px'
@@ -107,7 +103,6 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-// Add animation classes
 document.querySelectorAll('.service-card, .large-card, .small-card, .mvv-card, .client-logo').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(30px)';
@@ -115,7 +110,7 @@ document.querySelectorAll('.service-card, .large-card, .small-card, .mvv-card, .
   observer.observe(el);
 });
 
-// CSS for animation
+// CSS para animaciónes
 const style = document.createElement('style');
 style.textContent = `
   .animate-in {
@@ -125,7 +120,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ===== COUNTER ANIMATION =====
 function animateCounter(element, target, duration = 2000) {
   let start = 0;
   const increment = target / (duration / 16);
@@ -143,7 +137,6 @@ function animateCounter(element, target, duration = 2000) {
   updateCounter();
 }
 
-// Animate stats when visible
 const statsObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -163,7 +156,6 @@ document.querySelectorAll('.hero-stats, .about-image-badge').forEach(el => {
   statsObserver.observe(el);
 });
 
-// ===== ACTIVE NAV LINK =====
 function setActiveNavLink() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   
@@ -185,7 +177,7 @@ function setActiveNavLink() {
 
 setActiveNavLink();
 
-// ===== IMAGE LAZY LOADING =====
+// ===== Carga de imagen dinamica=====
 if ('IntersectionObserver' in window) {
   const imageObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
@@ -205,7 +197,7 @@ if ('IntersectionObserver' in window) {
   });
 }
 
-// ===== FORM VALIDATION HELPER =====
+// ===== Validaciones =====
 function validateEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
@@ -216,6 +208,135 @@ function validatePhone(phone) {
   return re.test(phone);
 }
 
-// Export for use in forms
 window.validateEmail = validateEmail;
 window.validatePhone = validatePhone;
+
+document.querySelectorAll('.faq-category').forEach(category => {
+  let header = category.querySelector('.faq-category-header');
+  const title = category.querySelector('.faq-category-title') || category.querySelector('h2, h3, h4');
+  if (!header && title) {
+    header = document.createElement('div');
+    header.className = 'faq-category-header';
+    header.appendChild(title);
+    const icon = document.createElement('span');
+    icon.className = 'category-icon';
+    icon.textContent = '▼';
+    header.appendChild(icon);
+    category.insertBefore(header, category.firstChild);
+  }
+
+  let content = category.querySelector('.faq-category-content');
+  const directItems = Array.from(category.querySelectorAll(':scope > .faq-item'));
+  if (!content && directItems.length) {
+    content = document.createElement('div');
+    content.className = 'faq-category-content';
+    directItems.forEach(it => content.appendChild(it));
+    const after = category.querySelector('.faq-category-header')?.nextSibling || null;
+    category.insertBefore(content, after);
+  }
+
+  category.querySelectorAll('.faq-item').forEach((item, idx) => {
+    item.style.setProperty('--i', idx);
+  });
+});
+
+document.querySelectorAll('.faq-category-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const category = header.closest('.faq-category');
+    if (!category) return;
+
+    const isOpen = category.classList.contains('section-active');
+
+    document.querySelectorAll('.faq-category.section-active').forEach(openCat => {
+      if (openCat !== category) openCat.classList.remove('section-active');
+    });
+
+ 
+    if (isOpen) {
+      category.classList.remove('section-active');
+    } else {
+      category.querySelectorAll('.faq-item').forEach((item, idx) => {
+        item.style.setProperty('--i', idx);
+      });
+      category.classList.add('section-active');
+
+      const items = Array.from(category.querySelectorAll('.faq-item'));
+      items.forEach((it, i) => {
+        it.style.opacity = '0';
+        it.style.transform = 'translateY(10px)';
+
+        it.offsetHeight;
+        setTimeout(() => {
+          it.style.opacity = '';
+          it.style.transform = '';
+        }, i * 80 + 60);
+      });
+    }
+  });
+});
+
+ // ==========================================
+    // CONTACTO 
+    // ==========================================
+   const contactForm = document.getElementById('contact-form');
+
+if (contactForm) {
+  contactForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    emailjs.sendForm(
+      "service_2gahwtr",
+      "template_6fzx6xg",
+      contactForm
+    ).then(
+      function () {
+        showNotification("Mensaje enviado correctamente ");
+        contactForm.reset();
+      },
+      function (error) {
+        console.error("Error:", error);
+        showNotification("Error al enviar el mensaje ", true);
+      }
+    );
+  });
+}
+
+function showNotification(message, isError = false) {
+  let notify = document.getElementById("notify");
+
+  if (!notify) {
+    notify = document.createElement('div');
+    notify.id = 'notify';
+    notify.className = 'notify';
+    notify.setAttribute('role', 'status');
+    notify.setAttribute('aria-live', 'polite');
+    notify.setAttribute('aria-atomic', 'true');
+    notify.innerHTML = `<span class="notify-icon">✓</span><p class="notify-text"></p><button class="notify-close" aria-label="Cerrar notificación">&times;</button>`;
+    document.body.appendChild(notify);
+
+    const closeBtn = notify.querySelector('.notify-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        notify.classList.remove('show');
+      });
+    }
+  }
+
+  const textEl = notify.querySelector('.notify-text');
+  const iconEl = notify.querySelector('.notify-icon');
+  if (textEl) textEl.textContent = message;
+  if (iconEl) iconEl.textContent = isError ? '!' : '✓';
+
+  notify.classList.remove('error');
+  if (isError) notify.classList.add('error');
+
+  // show
+  notify.classList.add('show');
+
+  // auto hide
+  clearTimeout(notify._hideTimeout);
+  notify._hideTimeout = setTimeout(() => {
+    notify.classList.remove('show');
+  }, 3500);
+}
+    
